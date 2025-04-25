@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartdocs-db
+spec:
+  selector:
+    matchLabels:
+      app: smartdocs-db
+  template:
+    metadata:
+      labels:
+        app: smartdocs-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        envFrom:
+        - configMapRef:
+            name: db-config
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: db-data
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: mysql-pvc

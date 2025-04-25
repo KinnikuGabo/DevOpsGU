@@ -1,0 +1,33 @@
+# Dependencias principales (tus originales)
+fastapi==0.95.2
+uvicorn==0.22.0
+mysql-connector-python==8.0.33
+passlib==1.7.4
+python-jose==3.3.0
+python-dotenv==1.0.0
+email-validator==1.3.1
+python-multipart==0.0.6
+PyPDF2==3.0.1
+faiss-cpu==1.7.4
+numpy==1.24.3
+sentence-transformers==2.2.2
+huggingface-hub==0.16.4
+requests==2.31.0
+
+# Nuevas dependencias necesarias para las mejoras
+python-magic==0.4.27       # Para validación de tipos de archivo (opcional pero recomendado)
+loguru==0.7.0              # Para logging mejorado (alternativa a logging estándar)
+orjson==3.9.2              # Para serialización JSON más rápida
+python-dateutil==2.8.2     # Para manejo avanzado de fechas
+filelock==3.12.4           # Para manejo seguro de archivos en multiproceso
+tqdm==4.65.0               # Para barras de progreso (usado en sentence-transformers)
+
+slowapi==0.1.7
+redis==4.5.5
+pymongo==4.5.0
+python-magic==0.4.27
+pydantic==1.10.7
+pydantic[email]  # Para validación de correos electrónicos
+werkzeug>=2.0.0
+pycryptodome==3.19.0
+cryptography==42.0.4

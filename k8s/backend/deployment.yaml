@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartdocs-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: smartdocs-backend
+  template:
+    metadata:
+      labels:
+        app: smartdocs-backend
+    spec:
+      containers:
+      - name: backend
+        image: smartdocs-backend:latest
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: backend-config
+        volumeMounts:
+        - name: uploads-volume
+          mountPath: /app/uploads
+        - name: vector-index-volume
+          mountPath: /app/vector_index.faiss
+          subPath: vector_index.faiss
+        - name: vector-index-volume
+          mountPath: /app/vector_index.faiss.meta
+          subPath: vector_index.faiss.meta
+      volumes:
+      - name: uploads-volume
+        persistentVolumeClaim:
+          claimName: uploads-pvc
+      - name: vector-index-volume
+        configMap:
+          name: vector-index-config

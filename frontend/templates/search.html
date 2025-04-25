@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Buscar en Documentos{% endblock %}
+{% block content %}
+    <h2>Buscar en Documentos</h2>
+    <form method="POST" action="{{ url_for('search') }}">
+        <label for="query">Término de búsqueda:</label>
+        <input type="text" id="query" name="query" required>
+        <button type="submit">Buscar</button>
+    </form>
+    
+    {% if results %}
+        <h3>Resultados de la búsqueda</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Fragmento</th>
+                    <th>Relevancia</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                    <tr>
+                        <td>{{ result.original_path.split('/')[-1] }}</td>
+                        <td>{{ result.text[:200] }}...</td>
+                        <td>{{ (result.score * 100)|round(2) }}%</td>
+                        <td>
+                            <a href="{{ url_for('ask') }}?file_id={{ result.file_id }}" class="btn">Preguntar sobre este documento</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif request.method == 'POST' %}
+        <p>No se encontraron resultados para tu búsqueda.</p>
+    {% endif %}
+{% endblock %}

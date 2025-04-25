@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-2 text-primary fw-bold">
+        ¡Hola {{ current_user.name if current_user and current_user.name else 'Usuario' }}! 👋
+    </h2>
+    <p class="text-secondary fs-5">
+        Bienvenido a <strong>SmartDocs</strong>, tu asistente inteligente para gestionar y consultar documentos.
+    </p>
+
+    <div class="d-flex justify-content-end gap-2 mt-4">
+        <a href="{{ url_for('upload') }}" class="btn btn-success">
+            <i class="bi bi-upload"></i> Subir archivo
+        </a>
+        <a href="{{ url_for('ask') }}" class="btn btn-info text-white">
+            <i class="bi bi-chat-dots"></i> Hacer una pregunta
+        </a>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Últimos archivos -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100 rounded-4 border-0">
+                <div class="card-body">
+                    <h4 class="card-title text-dark mb-3">
+                        <i class="bi bi-folder-check me-2"></i>Tus últimos archivos
+                    </h4>
+                    {% if my_files %}
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for file in my_files[:5] %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{{ url_for('download_file', file_id=file.id) }}" class="text-decoration-none">
+                                        {{ file.filename }}
+                                    </a>
+                                    <span class="badge bg-secondary">{{ (file.filesize / 1024)|round(2) }} KB</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{{ url_for('files') }}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-folder2-open"></i> Ver todos
+                        </a>
+                    {% else %}
+                        <div class="text-center text-muted">
+                            <i class="bi bi-file-earmark-x fs-1"></i>
+                            <p class="mt-2">Aún no has subido archivos.</p>
+                            <a href="{{ url_for('upload') }}" class="btn btn-primary mt-2">
+                                <i class="bi bi-upload"></i> Subir tu primer archivo
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Archivos compartidos contigo -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100 rounded-4 border-0">
+                <div class="card-body">
+                    <h4 class="card-title text-dark mb-3">
+                        <i class="bi bi-people me-2"></i>Archivos compartidos contigo
+                    </h4>
+                    {% if shared_files %}
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for file in shared_files[:5] %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{{ url_for('download_file', file_id=file.id) }}" class="text-decoration-none">
+                                        {{ file.filename }}
+                                    </a>
+                                    <span class="badge bg-info text-dark">de {{ file.owner_email }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{{ url_for('shared_files') }}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-people-fill"></i> Ver todos
+                        </a>
+                    {% else %}
+                        <div class="text-center text-muted">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p class="mt-2">No tienes archivos compartidos aún.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

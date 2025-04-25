@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión - SmartDocs{% endblock %}
+{% block content %}
+<style>
+    body {
+        background-color: #f5f7fa;
+    }
+    .auth-container {
+        max-width: 420px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.05);
+    }
+    .auth-logo img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto 1rem;
+    }
+    .btn-primary {
+        background-color: #1a2e5c;
+        border-color: #1a2e5c;
+    }
+    .btn-primary:hover {
+        background-color: #142348;
+        border-color: #142348;
+    }
+    a {
+        color: #1a2e5c;
+    }
+    a:hover {
+        color: #0d1a33;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="auth-container mt-5">
+    <div class="auth-logo text-center">
+        <img src="https://via.placeholder.com/150x50?text=SmartDocs" alt="SmartDocs Logo">
+    </div>
+    
+    <h2 class="text-center mb-4 text-dark">Iniciar Sesión</h2>
+    
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="mb-3">
+            <label for="email" class="form-label text-dark">Correo Electrónico</label>
+            <input type="email" class="form-control" id="email" name="email" 
+                   placeholder="tu@email.com" required>
+        </div>
+        
+        <div class="mb-4">
+            <label for="password" class="form-label text-dark">Contraseña</label>
+            <input type="password" class="form-control" id="password" name="password" 
+                   placeholder="••••••••" required>
+            <div class="text-end mt-2">
+                <a href="#" class="text-decoration-none small">¿Olvidaste tu contraseña?</a>
+            </div>
+        </div>
+        
+        <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-primary btn-lg">
+                Iniciar Sesión
+            </button>
+        </div>
+        
+        <div class="text-center">
+            <p class="mb-0 text-muted">¿No tienes una cuenta? 
+                <a href="{{ url_for('register') }}" class="text-decoration-none">
+                    Regístrate aquí
+                </a>
+            </p>
+        </div>
+    </form>
+</div>
+{% endblock %}

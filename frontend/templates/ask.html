@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Preguntar sobre Documentos{% endblock %}
+{% block content %}
+    <h2>Preguntar sobre Documentos</h2>
+    <form method="POST" action="{{ url_for('ask') }}">
+        <label for="file_id">Selecciona un documento:</label>
+        <select id="file_id" name="file_id" required>
+            <option value="">-- Selecciona un archivo --</option>
+            {% for file in files %}
+                <option value="{{ file.id }}" {% if file.id == selected_file_id %}selected{% endif %}>
+                    {{ file.filename }} ({% if file.owner_email %}de {{ file.owner_email }}{% else %}mío{% endif %})
+                </option>
+            {% endfor %}
+        </select>
+        
+        <label for="question">Tu pregunta:</label>
+        <textarea id="question" name="question" rows="3" required></textarea>
+        
+        <button type="submit">Preguntar</button>
+    </form>
+    
+    {% if answer %}
+        <div style="margin-top: 30px; padding: 15px; background-color: #f8f9fa; border-left: 5px solid #2c3e50;">
+            <h3>Respuesta:</h3>
+            <p>{{ answer }}</p>
+        </div>
+    {% endif %}
+{% endblock %}

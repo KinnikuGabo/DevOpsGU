@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Archivos Compartidos{% endblock %}
+{% block content %}
+    <h2>Archivos Compartidos Contigo</h2>
+    
+    {% if files %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Tamaño (KB)</th>
+                    <th>Fecha</th>
+                    <th>Propietario</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td>{{ file.filename }}</td>
+                        <td>{{ (file.filesize / 1024)|round(2) }}</td>
+                        <td>{{ file.uploaded_at }}</td>
+                        <td>{{ file.owner_email }}</td>
+                        <td>
+                            <a href="{{ url_for('download_file', file_id=file.id) }}" class="btn">Descargar</a>
+                            <a href="{{ url_for('ask') }}?file_id={{ file.id }}" class="btn btn-success">Preguntar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No tienes archivos compartidos contigo.</p>
+    {% endif %}
+{% endblock %}

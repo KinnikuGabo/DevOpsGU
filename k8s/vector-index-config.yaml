@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-index-config
+binaryData:
+  vector_index.faiss: <base64-encoded-content>
+  vector_index.faiss.meta: <base64-encoded-content>

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Subir Archivo{% endblock %}
+{% block content %}
+    <h2>Subir Archivo</h2>
+    <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+        <label for="file">Selecciona un archivo (PDF, TXT, DOCX):</label>
+        <input type="file" id="file" name="file" accept=".pdf,.txt,.docx" required>
+        
+        <button type="submit">Subir Archivo</button>
+    </form>
+{% endblock %}

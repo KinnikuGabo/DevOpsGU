@@ -1,0 +1,20 @@
+FROM python:3.10-slim
+WORKDIR /app
+
+# Instala dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    gcc python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copia requirements primero para cachear
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia el resto de la aplicación
+COPY . .
+
+# Configura variables de entorno por defecto
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=development
+ENV API_BASE_URL=http://backend:8000  
+CMD ["flask", "run", "--host", "0.0.0.0", "--port", "5000"]

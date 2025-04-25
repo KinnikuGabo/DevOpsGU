@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Mis Archivos{% endblock %}
+{% block content %}
+    <h2>Mis Archivos</h2>
+    <a href="{{ url_for('upload') }}" class="btn">Subir Nuevo Archivo</a>
+    
+    {% if files %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Tamaño (KB)</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td>{{ file.filename }}</td>
+                        <td>{{ (file.filesize / 1024)|round(2) }}</td>
+                        <td>{{ file.uploaded_at }}</td>
+                        <td>
+                            <a href="{{ url_for('download_file', file_id=file.id) }}" class="btn">Descargar</a>
+                            <a href="{{ url_for('delete_file', file_id=file.id) }}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de eliminar este archivo?')">Eliminar</a>
+                            <a href="{{ url_for('process_file', file_id=file.id) }}" class="btn btn-success">Procesar</a>
+                            <form method="POST" action="{{ url_for('share_file', file_id=file.id) }}" style="display: inline;">
+                                <input type="email" name="email" placeholder="email@ejemplo.com" required style="width: 150px; padding: 5px;">
+                                <button type="submit" class="btn">Compartir</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No tienes archivos subidos aún.</p>
+    {% endif %}
+{% endblock %}

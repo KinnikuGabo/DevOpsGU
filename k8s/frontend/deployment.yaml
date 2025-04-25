@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smartdocs-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: smartdocs-frontend
+  template:
+    metadata:
+      labels:
+        app: smartdocs-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: smartdocs-frontend:latest
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - configMapRef:
+            name: frontend-config

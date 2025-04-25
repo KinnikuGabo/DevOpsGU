@@ -1,0 +1,130 @@
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: smartdocs
+      MYSQL_USER: smartuser
+      MYSQL_PASSWORD: smartpass
+      MYSQL_ROOT_HOST: '%'
+      TZ: America/Mexico_City
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db_init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - smartdocs_net
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - smartdocs_net
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend-dev
+    container_name: smartdocs_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=smartuser
+      - DB_PASSWORD=smartpass
+      - DB_NAME=smartdocs
+      - OLLAMA_API=http://ollama:11434
+      - OLLAMA_MODEL=llama3:8b-instruct-q4_0
+    volumes:
+      - ./backend/src:/app/src
+    depends_on:
+      db:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    networks:
+      - smartdocs_net
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend-dev
+    container_name: smartdocs_frontend
+    ports:
+      - "5000:5000"
+    environment:
+      - API_BASE_URL=http://backend:8000
+    networks:
+      - smartdocs_net
+    restart: unless-stopped
+
+  clamav:
+    image: clamav/clamav:latest
+    container_name: clamav
+    environment:
+      - CLAMAV_NO_FRESHCLAMD=true
+    volumes:
+      - clamav_data:/var/lib/clamav
+    networks:
+      - smartdocs_net
+    healthcheck:
+      test: ["CMD", "clamdscan", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - smartdocs_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+
+  mongodb:
+    image: mongo:6
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - smartdocs_net
+
+volumes:
+  mysql_data:
+  ollama_data:
+  clamav_data:
+  mongodb_data:
+
+networks:
+  smartdocs_net:
+    driver: bridge
+

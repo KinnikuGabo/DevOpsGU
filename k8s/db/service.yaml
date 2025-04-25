@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: smartdocs-db
+spec:
+  selector:
+    app: smartdocs-db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
